@@ -4,7 +4,7 @@ import { withAuth } from "../with-auth";
 function Header(){
   return(
     <div className={styles.header}>
-      <Menu/>
+      <p>Header</p>
     </div>
   )
 }
