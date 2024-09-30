@@ -1,9 +1,9 @@
 import Layout from "@/layout";
 
-export default function Main() {
+export default function Main({ children }) {
   return (
     <div>
-    <Layout>
+    <Layout metaTitle="Home">
       <p>Home</p>
     </Layout>
     </div>
