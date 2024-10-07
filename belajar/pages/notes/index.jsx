@@ -8,18 +8,20 @@ export default function Notes({ notes }) {
   return (
     <>
       <LayoutComponent metaTitle="Notes">
-        <div style={{ border: "1px solid grey", marginTop:"5px" }}>
-          <Link href={`/notes/${notes.id}`}>
-            <p>{notes.name}</p>
-          </Link>
-        </div>
+        {notes.data.map((item) => (
+          <div style={{ border: "1 px solid grey", marginBottom: "5px" }}>
+            <Link href={`/notes/${item.id}`}>
+              <p>{item.title}</p>
+            </Link>
+          </div>
+        ))}
       </LayoutComponent>
     </>
   );
 }
 
-export async function getServerSideProps() {
-  const res = await fetch("https://api.github.com/repos/vercel/next.js");
+export async function getStaticProps() {
+  const res = await fetch("https://service.pace-unv.cloud/api/notes");
   const notes = await res.json();
-  return { props: { notes } };
+  return { props: { notes }, revalidate:10 };
 }

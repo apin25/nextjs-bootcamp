@@ -6,22 +6,23 @@ export default function DetailNotes({ notes }) {
   return (
     <LayoutComponent metaTitle="DetailNotes">
       <div>
-        <p>
-          title: {notes.name}
-        </p>
-        <p>
-            fullname: {notes.full_name}
-        </p>
+        <p>title: {notes.data.title}</p>
+        <p>desc: {notes.data.description}</p>
+        <p>update at: {notes.data.updated_at}</p>
       </div>
     </LayoutComponent>
   );
 }
 
 export async function getStaticPaths() {
-  const res = await fetch("https://api.github.com/repos/vercel/next.js");
-  const repo = await res.json();
+  const res = await fetch("https://service.pace-unv.cloud/api/notes");
+  const notes = await res.json();
 
-  const paths = [{ params: { id: repo.id.toString() } }];
+  const paths = notes.data.map((item) => ({
+    params: {
+      id: item.id,
+    },
+  }))
 
   return {
     paths,
@@ -29,8 +30,9 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps() {
-  const res = await fetch("https://api.github.com/repos/vercel/next.js");
-  const repo = await res.json();
-  return { props: { notes: { data: repo } } };
+export async function getStaticProps(context) {
+  const { id } = context.params;
+  const res = await fetch(`https://service.pace-unv.cloud/api/notes/${id}`);
+  const notes = await res.json();
+  return { props: { notes }, revalidate:10 };
 }
