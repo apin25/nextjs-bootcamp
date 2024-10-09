@@ -10,10 +10,12 @@ import {
   Input
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useRouter } from "next/router";
 const LayoutComponent = dynamic(() => import("@/layout"));
 
 export default function AddNotes() {
   const [notes, setNotes] = useState({title:"",description:""});
+  const router = useRouter();
   const HandleSubmit = async () => {
     try{
         const response = await fetch(
@@ -26,7 +28,9 @@ export default function AddNotes() {
           }
         );
         const result = await response.json()
-        console.log("result =>",result)
+        if (result?.success) {
+          router.push("/notes");
+        }
     } catch (error){
 
     }
