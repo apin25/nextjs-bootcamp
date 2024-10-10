@@ -14,45 +14,15 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useQueries } from "../../hooks/useQueries";
 
 const LayoutComponent = dynamic(() => import("@/layout"));
 
 export default function Notes() {
   const router = useRouter();
-  const [notes, setNotes] = useState([]);
-
-  // Handle deleting a note
-  const HandleDelete = async (id) => {
-    try {
-      const response = await fetch(
-        `https://service.pace-unv.cloud/api/notes/delete/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (response.ok) {
-        const result = await response.json();
-        if (result?.success) {
-          // Refresh the notes list after deleting a note
-          setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
-        }
-      } else {
-        console.error("Failed to delete the note");
-      }
-    } catch (error) {
-      console.error("An error occurred while deleting the note", error);
-    }
-  };
-
-  useEffect(() => {
-    async function fetchingData() {
-      const res = await fetch("https://service.pace-unv.cloud/api/notes");
-      const listNotes = await res.json();
-      setNotes(listNotes?.data || []); // Set default to an empty array if data is null or undefined
-    }
-    fetchingData();
-  }, []);
+  const { data: listNotes } = useQueries({
+    prefixUrl: "https://service.pace-unv.cloud/api/notes",
+  });
 
   return (
     <>
@@ -68,28 +38,24 @@ export default function Notes() {
           </Flex>
           <Flex>
             <Grid templateColumns="repeat(3, 1fr)" gap={5}>
-              {notes.map((item) => (
-                <GridItem key={item.id}>
+              {listNotes?.data?.map((item) => (
+                <GridItem>
                   <Card>
                     <CardHeader>
-                      <Heading>{item.title}</Heading>
+                      <Heading>{item?.title}</Heading>
                     </CardHeader>
                     <CardBody>
-                      <Text>{item.description}</Text>
+                      <Text>{item?.description}</Text>
                     </CardBody>
                     <CardFooter justify="space-between" flexWrap="wrap">
                       <Button
-                        onClick={() => router.push(`/notes/edit/${item.id}`)}
+                        onClick={() => router.push(`/notes/edit/${item?.id}`)}
                         flex="1"
                         variant="ghost"
                       >
                         Edit
                       </Button>
-                      <Button
-                        onClick={() => HandleDelete(item.id)}
-                        flex="1"
-                        colorScheme="red"
-                      >
+                      <Button flex="1" colorScheme="red">
                         Delete
                       </Button>
                     </CardFooter>
