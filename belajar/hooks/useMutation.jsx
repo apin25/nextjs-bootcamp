@@ -1,34 +1,49 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 export const useMutation = () => {
   const [data, setData] = useState({
     data: null,
-    isLoading: true,
+    isLoading: false,
     isError: false,
   });
 
   const mutate = useCallback(
-    async ({ url = "", method = "POST", payload = {} } = {}) => {
+    async ({ url = "", method = "POST", payload = {}, headers = {} } = {}) => {
+      setData({ isLoading: true, isError: false, data: null }); // Set loading state
       try {
-        const response = await fetch(url, {
+        const options = {
           method,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
+          headers: {
+            "Content-Type": "application/json",
+            ...headers,
+          },
+        };
+
+        if (method !== "GET") {
+          options.body = JSON.stringify(payload); 
+        }
+
+        const response = await fetch(url, options);
         const result = await response.json();
-        setData({
-          ...data,
+
+        if (!response.ok) {
+          throw new Error(result.message || "Something went wrong");
+        }
+
+        setData((prevData) => ({
+          ...prevData,
           data: result,
           isLoading: false,
-        });
-        return { ...result };
+        }));
+
+        return { success: true, data: result };
       } catch (error) {
-        setData({
-          ...data,
+        setData((prevData) => ({
+          ...prevData,
           isError: true,
           isLoading: false,
-        });
-        return error;
+        }));
+        return { success: false, error: error.message };
       }
     },
     []
