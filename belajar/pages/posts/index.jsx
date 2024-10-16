@@ -8,7 +8,7 @@ export default function Posts({ posts }) {
     <>
       <LayoutComponent metaTitle="Posts">
         {posts.map((item) => (
-          <div>
+          <div key={item.id}>
             <p>{item.id}</p>
             <p>
               <b>{item.title}</b>
