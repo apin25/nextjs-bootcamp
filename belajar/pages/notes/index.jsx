@@ -37,12 +37,9 @@ export default function Notes({ initialData }) {
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
-const { data: listNotes, mutate } = useSWR(
-  "/api/notes",
-  fetcher,
-  { initialData }
-);
-
+  const { data: listNotes, mutate } = useSWR("/api/notes", fetcher, {
+    initialData,
+  });
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
@@ -57,72 +54,70 @@ const { data: listNotes, mutate } = useSWR(
     onOpen();
   };
 
-const handleEditNote = (note) => {
-  setIsEditMode(true);
-  setSelectedNote(note);
-  setNoteData({
-    id: note.id,
-    title: note.title,
-    description: note.description,
-  });
-  onOpen();
-};
+  const handleEditNote = (note) => {
+    setIsEditMode(true);
+    setSelectedNote(note);
+    setNoteData({
+      id: note.id,
+      title: note.title,
+      description: note.description,
+    });
+    onOpen();
+  };
 
   const handleDeleteNote = (note) => {
     setSelectedNote(note);
     onDeleteOpen();
   };
 
-const handleSubmit = async () => {
-  let response;
+  const handleSubmit = async () => {
+    let response;
 
-  try {
-    if (isEditMode) {
-      // Update note
-      response = await fetch(`/api/notes/${noteData.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(noteData),
-      });
+    try {
+      if (isEditMode) {
+        // Update note
+        response = await fetch(`/api/notes/${noteData.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(noteData),
+        });
 
-      if (!response.ok) throw new Error("Failed to update note");
-      console.log("Note updated successfully:", noteData);
-    } else {
-      response = await fetch("/api/notes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(noteData),
-      });
+        if (!response.ok) throw new Error("Failed to update note");
+        console.log("Note updated successfully:", noteData);
+      } else {
+        response = await fetch("/api/notes", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(noteData),
+        });
 
-      if (!response.ok) throw new Error("Failed to add new note");
-      console.log("New note added successfully:", noteData);
-    }
+        if (!response.ok) throw new Error("Failed to add new note");
+        console.log("New note added successfully:", noteData);
+      }
 
-    mutate();
-    onClose();
-  } catch (error) {
-    console.error(error.message);
-
-  }
-};
-
-const confirmDelete = async () => {
-  if (selectedNote) {
-    const response = await fetch(`/api/notes/${selectedNote.id}`, {
-      method: "DELETE",
-    });
-
-    if (response.ok) {
       mutate();
-      onDeleteClose();
+      onClose();
+    } catch (error) {
+      console.error(error.message);
     }
-  }
-};
+  };
 
+  const confirmDelete = async () => {
+    if (selectedNote) {
+      const response = await fetch(`/api/notes/${selectedNote.id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        mutate();
+        onDeleteClose();
+      }
+    }
+  };
 
   return (
     <LayoutComponent metaTitle="Notes">

@@ -40,6 +40,14 @@
     "no-empty": "off",
     "comma-dangle": ["off", "never"],
     "no-unused-vars": "off",
-    "no-console": "off"
+    "no-console": "off",
+    "import/order": "off",
+    "import/newline-after-import": "off",
+    "react/jsx-curly-newline": "off",
+    "react/jsx-no-useless-fragment": "off",
+    "object-curly-newline": "off",
+    "no-multi-spaces": "off",
+    "no-trailing-spaces": "off", 
+    "eol-last": "off"
   }
 }

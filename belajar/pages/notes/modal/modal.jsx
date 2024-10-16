@@ -1,5 +1,5 @@
 import {
-  Modal,
+  Modal as ChakraModal,  
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -12,9 +12,9 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-export default function Modal({ isOpen, onClose, onSubmit, initialData }) {
+export default function CustomModal({ isOpen, onClose, onSubmit, initialData }) {
   const [formData, setFormData] = useState(
-    initialData || { title: "", description: "" }
+    initialData || { title: "", description: "" },
   );
 
   const handleChange = (e) => {
@@ -28,7 +28,7 @@ export default function Modal({ isOpen, onClose, onSubmit, initialData }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <ChakraModal isOpen={isOpen} onClose={onClose}>  {/* Use ChakraModal */}
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{initialData ? "Edit Notes" : "Add Notes"}</ModalHeader>
@@ -54,6 +54,6 @@ export default function Modal({ isOpen, onClose, onSubmit, initialData }) {
           </Button>
         </ModalFooter>
       </ModalContent>
-    </Modal>
+    </ChakraModal>
   );
 }

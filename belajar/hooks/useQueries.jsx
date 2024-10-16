@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-export const useQueries = ({ prefixUrl = "", headers={} } = {}) => {
+export const useQueries = ({ prefixUrl = "", headers = {} } = {}) => {
   const [data, setData] = useState({
     data: null,
     isLoading: true,
@@ -25,7 +25,7 @@ export const useQueries = ({ prefixUrl = "", headers={} } = {}) => {
         });
       }
     },
-    []
+    [],
   );
 
   useEffect(() => {

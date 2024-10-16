@@ -18,13 +18,19 @@ export default function EditNotes() {
   const { id } = router?.query;
   const HandleSubmit = async () => {
     try {
-      const response = await fetch(`https://service.pace-unv.cloud/api/notes/update/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `https://service.pace-unv.cloud/api/notes/update/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: notes?.title,
+            description: notes?.description,
+          }),
         },
-        body: JSON.stringify({ title: notes?.title, description: notes?.description}),
-      });
+      );
       const result = await response.json();
       if (result?.success) {
         router.push("/notes");
@@ -33,12 +39,15 @@ export default function EditNotes() {
   };
   useEffect(() => {
     async function fetchingData() {
-      const res = await fetch(`https://service.pace-unv.cloud/api/notes/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `https://service.pace-unv.cloud/api/notes/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
       const listNotes = await res.json();
       setNotes(listNotes?.data);
     }
@@ -57,13 +66,13 @@ export default function EditNotes() {
                 onChange={(event) =>
                   setNotes({ ...notes, title: event.target.value })
                 }
-                value={notes?.title || ''}
+                value={notes?.title || ""}
               />
             </GridItem>
             <GridItem>
               <Text>Description</Text>
               <Textarea
-              value={notes?.description || ''}
+                value={notes?.description || ""}
                 onChange={(event) =>
                   setNotes({ ...notes, description: event.target.value })
                 }

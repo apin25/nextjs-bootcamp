@@ -2,33 +2,32 @@ import Link from "next/link";
 import styles from "./styles.module.css";
 import { withAuth } from "../with-auth";
 import { MenuItem, Menu, MenuButton, Button, MenuList } from "@chakra-ui/react";
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useQueries } from "@/hooks/useQueries";
 import { useMutation } from "@/hooks/useMutation";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { useContext } from "react";
 import { UserContext } from "@/context/userContext";
-function Header(){
-
+function Header() {
   const { mutate } = useMutation();
   const router = useRouter();
   const userData = useContext(UserContext);
   const HandleLogout = async () => {
     const response = await mutate({
-      url:"https://service.pace-unv.cloud/api/logout",
+      url: "https://service.pace-unv.cloud/api/logout",
       method: "POST",
       headers: {
-        'Authorization':`Bearer ${Cookies.get('user_token')}`,
+        Authorization: `Bearer ${Cookies.get("user_token")}`,
       },
-  });
-  if(!response?.success){
-    console.log("Logout Gagal");
-  } else {
-    Cookies.remove("user_token");
-    router.push("/login");
-  }
-  }
+    });
+    if (!response?.success) {
+      console.log("Logout Gagal");
+    } else {
+      Cookies.remove("user_token");
+      router.push("/login");
+    }
+  };
   return (
     <div className={styles.header}>
       <ul>

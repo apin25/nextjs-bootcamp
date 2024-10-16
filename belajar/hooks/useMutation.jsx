@@ -20,7 +20,7 @@ export const useMutation = () => {
         };
 
         if (method !== "GET") {
-          options.body = JSON.stringify(payload); 
+          options.body = JSON.stringify(payload);
         }
 
         const response = await fetch(url, options);
@@ -46,7 +46,7 @@ export const useMutation = () => {
         return { success: false, error: error.message };
       }
     },
-    []
+    [],
   );
 
   return { ...data, mutate };

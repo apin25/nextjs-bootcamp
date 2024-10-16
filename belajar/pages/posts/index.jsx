@@ -2,8 +2,8 @@ import dynamic from "next/dynamic"; // Make sure you import Link from 'next/link
 
 const LayoutComponent = dynamic(() => import("@/layout"));
 
-export default function Posts({posts}) {
-    console.log("data post =>",posts)
+export default function Posts({ posts }) {
+  console.log("data post =>", posts);
   return (
     <>
       <LayoutComponent metaTitle="Posts">
