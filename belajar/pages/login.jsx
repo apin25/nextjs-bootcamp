@@ -25,8 +25,6 @@ export default function Login() {
       payload,
     });
 
-    console.log("Mutation response:", response); // Log the entire mutation response
-
     if (!response?.success) {
       toast({
         title: "Login Gagal",
@@ -39,9 +37,6 @@ export default function Login() {
     } else {
       const token = response?.data?.data?.token;
       const expiresAt = new Date(response?.data?.data?.expires_at);
-
-      console.log("Extracted token:", token);
-      console.log("Expires at:", expiresAt);
 
       Cookies.set("user_token", token, {
         expires: expiresAt,
