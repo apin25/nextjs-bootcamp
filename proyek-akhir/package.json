@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next lint && next build",
+    "build": "next lint --fix && next build",
     "start": "next start",
-    "lint": "next lint --fix"
+    "lint": "next lint"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.10.3",
