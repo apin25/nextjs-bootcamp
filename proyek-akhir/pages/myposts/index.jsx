@@ -61,7 +61,7 @@ export default function Home() {
     if (token) {
       fetchPosts();
     }
-  }, [token]);
+  }, [token, fetchPosts]);
 
   const getInitials = (name) => {
     if (!name) return "";
@@ -78,7 +78,7 @@ export default function Home() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ description: postContent }),
+      body: JSON.stringify({ content: postContent }),
     });
     setPostContent("");
     fetchPosts();
@@ -130,7 +130,6 @@ export default function Home() {
       setIsViewModalOpen(true);
     }
   };
-
   const closeViewModal = () => {
     setIsViewModalOpen(false);
     setViewPost(null);
@@ -198,50 +197,52 @@ export default function Home() {
 
       <div className="post-list p-4">
         {posts.length ? (
-          posts.map((post) => (
-            <div
-              key={post.id}
-              className="post-item p-4 border-b rounded-lg shadow-md mb-4"
-            >
-              <div className="flex items-center mb-2">
-                <div className="w-10 h-10 rounded-full bg-pink-500 text-white flex justify-center items-center">
-                  {getInitials(post.user?.name)}
+          // Filter posts to show only the user's posts
+          posts
+            .filter((post) => post.user?.id === user.data?.id)
+            .map((post) => (
+              <div
+                key={post.id}
+                className="post-item p-4 border-b rounded-lg shadow-md mb-4"
+              >
+                <div className="flex items-center mb-2">
+                  <div className="w-10 h-10 rounded-full bg-pink-500 text-white flex justify-center items-center">
+                    {getInitials(post.user?.name)}
+                  </div>
+                  <div className="ml-3">
+                    <p className="font-bold">{post.user?.name}</p>
+                    <p className="text-sm text-gray-500">{post.user?.email}</p>
+                    <p className="text-sm text-gray-400">
+                      {new Date(post.created_at).toDateString()}
+                    </p>
+                  </div>
                 </div>
-                <div className="ml-3">
-                  <p className="font-bold">{post.user?.name}</p>
-                  <p className="text-sm text-gray-500">{post.user?.email}</p>
-                  <p className="text-sm text-gray-400">
-                    {new Date(post.created_at).toDateString()}
-                  </p>
-                </div>
-              </div>
-              <p className="text-gray-800 mb-2">{post.description}</p>
-              <div className="post-actions flex justify-between items-center mt-2 text-gray-500">
-                <div className="flex items-center">
-                  <button
-                    type="button"
-                    className="like-button mr-2"
-                    onClick={() =>
-                      (post.is_like_post
-                        ? handleUnlike(post.id)
-                        : handleLike(post.id))
-                    }
-                  >
-                    {post.is_like_post ? (
-                      <span className="text-red-500">❤️</span>
-                    ) : (
-                      <span className="text-gray-500">♡</span>
-                    )}
-                    {post.likes_count || 0} Likes
-                  </button>
-                  <Link href={`/reply/${post.id}`}>
-                    <button type="button" className="reply-button">
-                      💬 {post.replies_count || 0} Replies
+                <p className="text-gray-800 mb-2">{post.description}</p>
+                <div className="post-actions flex justify-between items-center mt-2 text-gray-500">
+                  <div className="flex items-center">
+                    <button
+                      type="button"
+                      className="like-button mr-2"
+                      onClick={() =>
+                        (post.is_like_post
+                          ? handleUnlike(post.id)
+                          : handleLike(post.id))
+                      }
+                    >
+                      {post.is_like_post ? (
+                        <span className="text-red-500">❤️</span>
+                      ) : (
+                        <span className="text-gray-500">♡</span>
+                      )}
+                      {post.likes_count || 0} Likes
                     </button>
-                  </Link>
-                </div>
-                <div className="inline-flex">
-                  {post.is_own_post && (
+                    <Link href={`/reply/${post.id}`}>
+                      <button type="button" className="reply-button">
+                        💬 {post.replies_count || 0} Replies
+                      </button>
+                    </Link>
+                  </div>
+                  <div className="inline-flex">
                     <button
                       type="button"
                       className="text-blue-500 mr-4"
@@ -249,8 +250,6 @@ export default function Home() {
                     >
                       See
                     </button>
-                  )}
-                  {post.is_own_post && (
                     <button
                       type="button"
                       className="text-yellow-500 mr-4"
@@ -258,8 +257,6 @@ export default function Home() {
                     >
                       Edit
                     </button>
-                  )}
-                  {post.is_own_post && (
                     <button
                       type="button"
                       onClick={() => handleDelete(post.id)}
@@ -267,11 +264,10 @@ export default function Home() {
                     >
                       Delete
                     </button>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))
         ) : (
           <p>No posts available.</p>
         )}
@@ -331,7 +327,7 @@ export default function Home() {
                   <button
                     type="button"
                     className="text-yellow-500 mr-4"
-                    onClick={() => openEditModal(viewPost)}
+                    onClick={() => openEditModal(viewPost.id)}
                   >
                     Edit
                   </button>
